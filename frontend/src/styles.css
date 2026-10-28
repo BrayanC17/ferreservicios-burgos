@@ -1,0 +1,90 @@
+:root {
+  --azul: #0B2A4A;
+  --azul-profundo: #071C33;
+  --azul-medio: #14406E;
+  --verde: #7DDBA3;
+  --verde-suave: #E6F7EE;
+  --verde-texto: #2E8F5B;
+  --fondo: #F5F8FB;
+  --linea: #D8E2EC;
+  --texto-suave: #51647A;
+  --blanco: #FFFFFF;
+
+  --fuente-titulo: 'Barlow Condensed', sans-serif;
+  --fuente-texto: 'Barlow', sans-serif;
+  --ancho-max: 1240px;
+}
+
+/* ===== Base ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fuente-texto);
+  color: var(--azul);
+  background: var(--fondo);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--fuente-titulo);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0;
+}
+
+a {
+  color: var(--azul-medio);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 3px solid var(--verde);
+  outline-offset: 2px;
+}
+
+/* ===== Utilidades ===== */
+.contenedor {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-verde {
+  background: var(--verde);
+  color: var(--azul);
+}
+
+.btn-azul {
+  background: var(--azul);
+  color: var(--blanco);
+}
+
+.btn-borde {
+  border-color: var(--blanco);
+  color: var(--blanco);
+  background: transparent;
+}
