@@ -1,0 +1,48 @@
+.banda { background: var(--azul, #0B2A4A); margin-top: 48px; }
+.interior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 36px;
+  padding: 64px 0;
+}
+.texto { flex: 1 1 420px; display: flex; flex-direction: column; gap: 16px; }
+.texto h2 {
+  margin: 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.9rem;
+  line-height: 1;
+  color: #fff;
+}
+.texto h2 span { color: var(--verde, #7DDBA3); }
+.texto p { margin: 0; font-size: 1.1rem; line-height: 1.5; color: #CFE0F0; max-width: 520px; }
+.cta {
+  align-self: flex-start;
+  margin-top: 6px;
+  background: var(--verde, #7DDBA3);
+  color: var(--azul, #0B2A4A);
+  text-decoration: none;
+  font-weight: 700;
+  padding: 0 28px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  border-radius: 12px;
+  transition: filter .15s;
+}
+.cta:hover { filter: brightness(.95); }
+
+.tarjetas { flex: 1 1 420px; display: flex; flex-wrap: wrap; gap: 16px; }
+.tarjeta {
+  flex: 1 1 180px;
+  background: var(--azul-medio, #14406E);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tarjeta h3 { margin: 0; font-size: 1.2rem; color: #fff; }
+.tarjeta p { margin: 0; font-size: .95rem; color: #CFE0F0; }
+
+@media (max-width: 600px) { .texto h2 { font-size: 2.3rem; } .interior { padding: 44px 0; } }

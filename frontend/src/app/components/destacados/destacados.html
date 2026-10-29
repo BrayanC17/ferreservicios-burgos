@@ -1,0 +1,30 @@
+<section class="contenedor seccion">
+  <div class="cabecera">
+    <div>
+      <h2>Productos con mayor demanda</h2>
+      <p>Los que más se llevan nuestros vecinos, con su precio de local.</p>
+    </div>
+    <a href="#" class="ver-todo">Ver todos los productos →</a>
+  </div>
+
+  <div class="grid">
+    @for (p of productos(); track p.id) {
+      <article class="tarjeta">
+        <span class="etiqueta">Destacado</span>
+        <div class="foto">
+          @if (imagen(p); as src) {
+            <img [src]="src" [alt]="p.nombre" loading="lazy" />
+          } @else {
+            <span class="sin-foto">🛠️</span>
+          }
+        </div>
+        <div class="info">
+          <span class="categoria">{{ p.categoria }}</span>
+          <h3>{{ p.nombre }}</h3>
+          <p class="precio">{{ precio(p) }}</p>
+          <button class="boton" type="button" (click)="agregar(p)">Agregar a cotización</button>
+        </div>
+      </article>
+    }
+  </div>
+</section>

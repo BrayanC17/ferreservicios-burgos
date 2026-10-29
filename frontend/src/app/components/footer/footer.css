@@ -1,0 +1,30 @@
+.pie {
+  background: var(--azul-profundo, #071C33);
+  color: #fff;
+}
+.columnas {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr;
+  gap: 32px;
+  padding: 48px 0 32px;
+}
+.pie h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+}
+.pie h4 {
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--verde, #7DDBA3);
+  margin: 0 0 10px;
+}
+.pie p { margin: 0 0 6px; color: #C9D6E3; font-size: .95rem; }
+.derechos {
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  padding: 16px 0;
+  font-size: .85rem;
+  color: #9FB3C8;
+}
+@media (max-width: 800px) { .columnas { grid-template-columns: 1fr; } }

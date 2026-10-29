@@ -15,7 +15,9 @@ app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:4200' }));
 app.use(express.json());
 app.use('/imagenes', express.static(path.join(__dirname, '..', 'uploads')));
 app.use('/api/productos', productosRoutes);
-
+app.use('/api/estadisticas', estadisticasRoutes);
+app.use('/api', productosRoutes);
+app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 // Comprueba que la API y la base de datos respondan.
 app.get('/api/health', async (req, res) => {
   try {

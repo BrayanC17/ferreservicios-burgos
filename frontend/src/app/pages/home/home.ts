@@ -1,10 +1,12 @@
 import { Component, computed, inject, signal } from '@angular/core';
-
 import { Estadisticas, EstadisticasService } from '../../services/estadisticas.service';
+import { Categorias } from '../../components/categorias/categorias';
+import { Destacados } from '../../components/destacados/destacados';
+import { Servicios } from '../../components/servicios/servicios';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [Categorias, Destacados, Servicios],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
