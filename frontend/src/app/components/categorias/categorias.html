@@ -1,12 +1,12 @@
 <section class="contenedor seccion">
   <div class="cabecera">
     <h2>Compra por categoría</h2>
-    <a href="#" class="ver-todo">Ver las {{ total() }} categorías →</a>
+    <a routerLink="/catalogo" class="ver-todo">Ver las {{ total() }} categorías →</a>
   </div>
 
   <div class="grid">
     @for (c of categorias(); track c.id) {
-      <a href="#" class="tarjeta">
+      <a routerLink="/catalogo" [queryParams]="{ categoria: c.slug }" class="tarjeta">
         <span class="icono">{{ icono(c.slug) }}</span>
         <span class="texto">
           <strong>{{ c.nombre }}</strong>

@@ -4,7 +4,7 @@
       <h2>Productos con mayor demanda</h2>
       <p>Los que más se llevan nuestros vecinos, con su precio de local.</p>
     </div>
-    <a href="#" class="ver-todo">Ver todos los productos →</a>
+    <a routerLink="/catalogo" class="ver-todo">Ver todos los productos →</a>
   </div>
 
   <div class="grid">
@@ -22,7 +22,9 @@
           <span class="categoria">{{ p.categoria }}</span>
           <h3>{{ p.nombre }}</h3>
           <p class="precio">{{ precio(p) }}</p>
-          <button class="boton" type="button" (click)="agregar(p)">Agregar a cotización</button>
+          <button class="boton" type="button" (click)="agregar(p)">
+  {{ agregado() === p.id ? '✓ Agregado' : 'Agregar a cotización' }}
+</button>
         </div>
       </article>
     }

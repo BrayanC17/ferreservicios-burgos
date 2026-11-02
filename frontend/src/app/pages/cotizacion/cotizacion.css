@@ -1,0 +1,104 @@
+.pagina { padding: 40px 0 64px; }
+h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 2.4rem; color: var(--azul, #0B2A4A); margin: 0 0 20px; }
+
+.vacio {
+  background: #fff;
+  border: 1px dashed var(--linea, #D8E2EC);
+  border-radius: 14px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--texto-suave, #51647A);
+}
+
+.layout { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; }
+
+.lista { display: flex; flex-direction: column; gap: 12px; }
+.item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto auto;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--linea, #D8E2EC);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.foto {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  background: var(--verde-suave, #E6F7EE);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-size: 1.6rem;
+}
+.foto img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.categoria { font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--texto-suave, #51647A); }
+.datos h3 { margin: 2px 0; font-size: 1rem; color: var(--azul, #0B2A4A); }
+.unitario { font-size: .85rem; color: var(--texto-suave, #51647A); }
+
+.cantidad { display: flex; align-items: center; border: 1px solid var(--linea, #D8E2EC); border-radius: 10px; overflow: hidden; }
+.cantidad button { width: 34px; height: 38px; border: 0; background: var(--fondo, #F5F8FB); font-size: 1.1rem; cursor: pointer; color: var(--azul, #0B2A4A); }
+.cantidad input { width: 52px; height: 38px; border: 0; text-align: center; font: inherit; -moz-appearance: textfield; }
+.cantidad input::-webkit-outer-spin-button, .cantidad input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.subtotal { min-width: 100px; text-align: right; font-weight: 800; color: var(--azul, #0B2A4A); }
+.quitar { border: 0; background: none; color: var(--texto-suave, #51647A); cursor: pointer; font-size: 1rem; padding: 6px; }
+.quitar:hover { color: #C0392B; }
+.vaciar { align-self: flex-start; background: none; border: 0; color: var(--texto-suave, #51647A); text-decoration: underline; cursor: pointer; padding: 4px 0; font: inherit; }
+
+.resumen {
+  position: sticky;
+  top: 16px;
+  background: #fff;
+  border: 1px solid var(--linea, #D8E2EC);
+  border-radius: 14px;
+  padding: 20px;
+}
+.total { display: flex; justify-content: space-between; align-items: baseline; }
+.total strong { font-size: 1.6rem; color: var(--azul, #0B2A4A); }
+.nota { font-size: .82rem; color: var(--texto-suave, #51647A); margin: 6px 0 16px; }
+
+form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; color: var(--azul, #0B2A4A); }
+input[type='text'], input[type='tel'], input[type='date'], select, textarea {
+  padding: 11px 12px;
+  border: 1px solid var(--linea, #D8E2EC);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 400;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--verde, #7DDBA3); border-color: transparent; }
+.error { color: #C0392B; font-weight: 500; font-size: .8rem; }
+.enviar {
+  background: var(--verde, #7DDBA3);
+  color: var(--azul, #0B2A4A);
+  border: 0;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.enviar:hover { filter: brightness(.95); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .resumen { position: static; }
+  .item { grid-template-columns: 64px 1fr auto; }
+  .item .cantidad { grid-column: 2 / 3; }
+  .item .subtotal { grid-column: 3 / 4; }
+}
+
+.exito {
+  background: var(--verde-suave, #E6F7EE);
+  border: 1px solid var(--verde, #7DDBA3);
+  border-radius: 14px;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--azul, #0B2A4A);
+}
+.exito h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; margin: 0 0 8px; }
+.exito p { margin: 0 0 8px; }
+.enviar:disabled { opacity: .6; cursor: wait; }

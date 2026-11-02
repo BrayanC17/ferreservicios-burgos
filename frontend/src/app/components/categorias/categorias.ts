@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Categoria, ProductosService } from '../../services/productos.service';
+import { RouterLink } from '@angular/router';
 
 const ICONOS: Record<string, string> = {
   'herramienta': '🔨',
@@ -21,7 +22,7 @@ const ICONOS: Record<string, string> = {
 
 @Component({
   selector: 'app-categorias',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './categorias.html',
   styleUrl: './categorias.css',
 })

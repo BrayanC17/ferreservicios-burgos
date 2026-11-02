@@ -62,3 +62,21 @@ async function listarCategorias() {
 }
 
 module.exports = { listar, listarCategorias };
+
+async function sugerencias(q) {
+  q = (q || '').trim();
+  if (q.length < 2) return [];
+
+  const [rows] = await pool.query(
+    `SELECT p.id, p.nombre, c.nombre AS categoria
+       FROM productos p
+       JOIN categorias c ON c.id = p.categoria_id
+      WHERE p.activo = 1 AND p.nombre LIKE ?
+      ORDER BY (p.nombre LIKE ?) DESC, p.nombre ASC
+      LIMIT 8`,
+    [`%${q}%`, `${q}%`]
+  );
+  return rows;
+}
+
+module.exports = { listar, listarCategorias, sugerencias };

@@ -1,23 +1,21 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-const productosRoutes = require('./routes/productos.routes');
-
 const pool = require('./config/db');
 const estadisticasRoutes = require('./routes/estadisticas.routes');
+const productosRoutes = require('./routes/productos.routes');
+const cotizacionesRoutes = require('./routes/cotizaciones.routes');
 
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:4200' }));
 app.use(express.json());
+
+// Imágenes de productos
 app.use('/imagenes', express.static(path.join(__dirname, '..', 'uploads')));
-app.use('/api/productos', productosRoutes);
-app.use('/api/estadisticas', estadisticasRoutes);
-app.use('/api', productosRoutes);
-app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
+
 // Comprueba que la API y la base de datos respondan.
 app.get('/api/health', async (req, res) => {
   try {
@@ -29,9 +27,12 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Rutas de la API
 app.use('/api/estadisticas', estadisticasRoutes);
+app.use('/api', productosRoutes);
+app.use('/api', cotizacionesRoutes);
 
-// Ruta inexistente
+// Ruta inexistente (siempre después de todas las rutas)
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada.' });
 });

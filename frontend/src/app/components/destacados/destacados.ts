@@ -1,10 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { IMAGENES_URL } from '../../api.config';
 import { Producto, ProductosService } from '../../services/productos.service';
+import { RouterLink } from '@angular/router';
+import { CarritoService } from '../../services/carrito.service';
+
 
 @Component({
   selector: 'app-destacados',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './destacados.html',
   styleUrl: './destacados.css',
 })
@@ -31,8 +34,13 @@ export class Destacados implements OnInit {
     }).format(Number(p.precio));
   }
 
+    private carrito = inject(CarritoService);
+  agregado = signal<number | null>(null);
+
   agregar(p: Producto) {
-    // Más adelante esto se conecta al carrito de cotización.
-    console.log('Agregar a cotización:', p.nombre);
+    this.carrito.agregar(p);
+    this.agregado.set(p.id);
+    setTimeout(() => this.agregado.set(null), 1500);
   }
+
 }

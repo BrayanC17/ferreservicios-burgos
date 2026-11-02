@@ -25,3 +25,13 @@ async function listarCategorias(req, res, next) {
 }
 
 module.exports = { listar, listarCategorias };
+
+async function sugerencias(req, res, next) {
+  try {
+    res.json(await productosService.sugerencias(req.query.q));
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { listar, listarCategorias, sugerencias };
