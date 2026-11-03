@@ -16,8 +16,8 @@
       </p>
 
       <div class="hero__botones">
-        <a class="btn btn-verde" href="#">Ver catálogo</a>
-        <a class="btn btn-borde" href="#">Solicitar un servicio</a>
+        <a class="btn btn-verde" routerLink="/catalogo">Ver catálogo</a>
+        <a class="btn btn-borde" routerLink="/servicios">Solicitar un servicio</a>
       </div>
 
       <div class="hero__stats">
@@ -66,6 +66,8 @@
   </div>
 </section>
 
-<app-categorias></app-categorias>
-<app-destacados></app-destacados>
+<div id="categorias"><app-categorias></app-categorias></div>
+<div id="demandados"><app-destacados></app-destacados></div>
 <app-servicios></app-servicios>
+<div id="nosotros"><app-nosotros></app-nosotros></div>
+<div id="contacto"><app-contacto></app-contacto></div>

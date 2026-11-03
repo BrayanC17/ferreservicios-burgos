@@ -6,6 +6,7 @@ const pool = require('./config/db');
 const estadisticasRoutes = require('./routes/estadisticas.routes');
 const productosRoutes = require('./routes/productos.routes');
 const cotizacionesRoutes = require('./routes/cotizaciones.routes');
+const solicitudesRoutes = require('./routes/solicitudes.routes');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/estadisticas', estadisticasRoutes);
 app.use('/api', productosRoutes);
 app.use('/api', cotizacionesRoutes);
+app.use('/api', solicitudesRoutes);
 
 // Ruta inexistente (siempre después de todas las rutas)
 app.use((req, res) => {

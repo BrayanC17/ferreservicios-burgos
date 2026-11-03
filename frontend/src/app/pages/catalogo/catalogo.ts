@@ -69,7 +69,7 @@ export class Catalogo implements OnInit {
   }
 
   buscar(valor: string) {
-    this.irA({ q: valor.trim() || null, page: null });
+    this.irA({ q: valor.trim() || null, categoria: null, page: null });
   }
 
   elegirCategoria(slug: string) {

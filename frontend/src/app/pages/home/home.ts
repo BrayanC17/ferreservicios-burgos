@@ -3,10 +3,13 @@ import { Estadisticas, EstadisticasService } from '../../services/estadisticas.s
 import { Categorias } from '../../components/categorias/categorias';
 import { Destacados } from '../../components/destacados/destacados';
 import { Servicios } from '../../components/servicios/servicios';
+import { RouterLink } from '@angular/router';
+import { Nosotros } from '../../components/nosotros/nosotros';
+import { Contacto } from '../../components/contacto/contacto';
 
 @Component({
   selector: 'app-home',
-  imports: [Categorias, Destacados, Servicios],
+  imports: [Categorias, Destacados, Servicios, RouterLink, Nosotros, Contacto],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

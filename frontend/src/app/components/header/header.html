@@ -60,7 +60,7 @@
     </form>
 
     <div class="acciones">
-      <a class="acciones__servicios" href="#">
+      <a class="acciones__servicios" routerLink="/servicios">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B2A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z" />
         </svg>
@@ -92,9 +92,9 @@
     <a class="menu__enlace" routerLink="/" routerLinkActive="menu__enlace--activo"
        [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
     <a class="menu__enlace" routerLink="/catalogo" routerLinkActive="menu__enlace--activo">Catálogo</a>
-    <a class="menu__enlace" href="#">Más demandados</a>
-    <a class="menu__enlace" href="#">Servicios</a>
-    <a class="menu__enlace" href="#">Nosotros</a>
-    <a class="menu__enlace" href="#">Contacto</a>
+    <a class="menu__enlace" routerLink="/" fragment="demandados">Más demandados</a>
+    <a class="menu__enlace" routerLink="/servicios" routerLinkActive="menu__enlace--activo">Servicios</a>
+    <a class="menu__enlace" routerLink="/" fragment="nosotros">Nosotros</a>
+    <a class="menu__enlace" routerLink="/" fragment="contacto">Contacto</a>
   </div>
 </nav>

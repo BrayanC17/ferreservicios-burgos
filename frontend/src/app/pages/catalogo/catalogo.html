@@ -1,8 +1,9 @@
 <section class="contenedor pagina">
   <h1>Catálogo de productos</h1>
 
-  <form class="buscador" (submit)="$event.preventDefault(); buscar(caja.value)">
-    <input #caja type="search" [value]="q()" placeholder="Busca por nombre o código (ej. llave, cable, FSB-00911)" />
+  <form class="buscador" (submit)="$event.preventDefault(); buscar(caja.value); caja.value = ''">
+    <input #caja type="search" autocomplete="off"
+         placeholder="Busca por nombre o código (ej. llave, cable, FSB-00911)" />
     <button type="submit">Buscar</button>
   </form>
 

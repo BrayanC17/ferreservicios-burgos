@@ -88,3 +88,6 @@ img {
   color: var(--blanco);
   background: transparent;
 }
+
+html { scroll-behavior: smooth; }
+[id] { scroll-margin-top: 16px; }
