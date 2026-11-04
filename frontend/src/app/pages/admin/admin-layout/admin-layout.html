@@ -1,0 +1,25 @@
+<div class="panel">
+  <aside class="lateral">
+    <div class="marca">
+      <strong>Ferreservicios</strong>
+      <small>ADMINISTRACIÓN</small>
+    </div>
+
+    <nav>
+      <a routerLink="/admin/resumen" routerLinkActive="activo">Resumen</a>
+      @for (p of proximas; track p) {
+        <span class="pronto">{{ p }} <em>pronto</em></span>
+      }
+    </nav>
+
+    <div class="pie">
+      <span class="usuario">{{ auth.usuario()?.nombre }}</span>
+      <a routerLink="/" class="enlace">Ver sitio</a>
+      <button type="button" (click)="auth.logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="contenido">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,13 @@
+<h1>Hola, {{ auth.usuario()?.nombre }} 👋</h1>
+<p class="sub">Este es el resumen de tu tienda.</p>
+
+<div class="tarjetas">
+  <article>
+    <span>Productos publicados</span>
+    <strong>{{ datos()?.productos ?? '—' }}</strong>
+  </article>
+  <article>
+    <span>Categorías</span>
+    <strong>{{ datos()?.categorias ?? '—' }}</strong>
+  </article>
+</div>

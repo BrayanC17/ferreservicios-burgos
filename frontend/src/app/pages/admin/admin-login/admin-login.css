@@ -1,0 +1,63 @@
+.pantalla {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--azul-profundo, #071C33);
+}
+.tarjeta {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+}
+.marca { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.logo { display: grid; place-items: center; width: 48px; height: 48px; background: var(--azul, #0B2A4A); border-radius: 12px; }
+.marca strong { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; color: var(--azul, #0B2A4A); line-height: 1; }
+.marca small { font-size: .65rem; letter-spacing: .15em; color: var(--verde-texto, #2E8F5B); font-weight: 700; }
+h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.9rem; color: var(--azul, #0B2A4A); margin: 0 0 18px; }
+
+form { display: flex; flex-direction: column; gap: 14px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: .9rem; color: var(--azul, #0B2A4A); }
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid var(--linea, #D8E2EC);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 400;
+}
+input:focus { outline: 2px solid var(--verde, #7DDBA3); border-color: transparent; }
+.clave { position: relative; display: block; }
+.clave input { padding-right: 64px; }
+.clave button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: none;
+  color: var(--azul-medio, #14406E);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+.error { color: #C0392B; font-weight: 500; font-size: .82rem; margin: 0; }
+.alerta { background: #FDECEA; border-radius: 8px; padding: 10px 12px; }
+.entrar {
+  background: var(--verde, #7DDBA3);
+  color: var(--azul, #0B2A4A);
+  border: 0;
+  border-radius: 10px;
+  padding: 13px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.entrar:hover { filter: brightness(.95); }
+.entrar:disabled { opacity: .6; cursor: wait; }
+.volver { display: block; text-align: center; margin-top: 18px; color: var(--texto-suave, #51647A); text-decoration: none; font-size: .9rem; }
+.volver:hover { text-decoration: underline; }

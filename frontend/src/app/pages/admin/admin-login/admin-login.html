@@ -1,0 +1,45 @@
+<main class="pantalla">
+  <section class="tarjeta">
+    <div class="marca">
+      <span class="logo">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7DDBA3" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2l8.5 5v10L12 22l-8.5-5V7z" />
+          <circle cx="12" cy="12" r="3.2" />
+        </svg>
+      </span>
+      <div>
+        <strong>Ferreservicios</strong>
+        <small>PANEL DE ADMINISTRACIÓN</small>
+      </div>
+    </div>
+
+    <h1>Iniciar sesión</h1>
+
+    <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+      <label>
+        Correo
+        <input type="email" formControlName="correo" autocomplete="username" />
+        @if (invalido('correo')) { <small class="error">Escribe un correo válido.</small> }
+      </label>
+
+      <label>
+        Contraseña
+        <span class="clave">
+          <input [type]="verClave() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+          <button type="button" (click)="verClave.set(!verClave())" [attr.aria-label]="verClave() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            {{ verClave() ? 'Ocultar' : 'Ver' }}
+          </button>
+        </span>
+        @if (invalido('password')) { <small class="error">Escribe tu contraseña.</small> }
+      </label>
+
+      @if (error()) { <p class="error alerta">{{ error() }}</p> }
+
+      <button type="submit" class="entrar" [disabled]="enviando()">
+        {{ enviando() ? 'Ingresando…' : 'Ingresar' }}
+      </button>
+    </form>
+
+    <a routerLink="/" class="volver">← Volver al sitio</a>
+  </section>
+</main>

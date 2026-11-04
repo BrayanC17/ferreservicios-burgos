@@ -7,7 +7,7 @@ const estadisticasRoutes = require('./routes/estadisticas.routes');
 const productosRoutes = require('./routes/productos.routes');
 const cotizacionesRoutes = require('./routes/cotizaciones.routes');
 const solicitudesRoutes = require('./routes/solicitudes.routes');
-
+const authRoutes = require('./routes/auth.routes');
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
@@ -33,7 +33,7 @@ app.use('/api/estadisticas', estadisticasRoutes);
 app.use('/api', productosRoutes);
 app.use('/api', cotizacionesRoutes);
 app.use('/api', solicitudesRoutes);
-
+app.use('/api', authRoutes);
 // Ruta inexistente (siempre después de todas las rutas)
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada.' });
