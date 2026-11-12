@@ -1,16 +1,14 @@
-require('dotenv').config();
 const mysql = require('mysql2/promise');
 
-// Pool de conexiones: reutiliza conexiones en vez de abrir una por consulta.
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
+  host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'ferreservicios_burgos',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  charset: 'utf8mb4',
+  ssl: process.env.DB_SSL === 'true' ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined,
 });
 
 module.exports = pool;

@@ -9,9 +9,13 @@ const cotizacionesRoutes = require('./routes/cotizaciones.routes');
 const solicitudesRoutes = require('./routes/solicitudes.routes');
 const authRoutes = require('./routes/auth.routes');
 const app = express();
-const adminRoutes = require('./routes/admin.routes');  
+const adminRoutes = require('./routes/admin.routes');
+const fs = require('fs');  
 
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false,
+}));
 app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:4200' }));
 app.use(express.json());
 
