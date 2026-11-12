@@ -11,6 +11,5 @@ import { AuthService } from '../../../services/auth.service';
 export class AdminLayout {
   auth = inject(AuthService);
 
-  // Las secciones sin enlace se activan en los próximos pasos.
-  proximas = ['Inventario', 'Cotizaciones', 'Servicios', 'Pagos', 'Reportes'];
+  proximas = ['Inventario', 'Pagos', 'Reportes'];
 }

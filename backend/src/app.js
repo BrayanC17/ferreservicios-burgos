@@ -9,10 +9,12 @@ const cotizacionesRoutes = require('./routes/cotizaciones.routes');
 const solicitudesRoutes = require('./routes/solicitudes.routes');
 const authRoutes = require('./routes/auth.routes');
 const app = express();
+const adminRoutes = require('./routes/admin.routes');  
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:4200' }));
 app.use(express.json());
+
 
 // Imágenes de productos
 app.use('/imagenes', express.static(path.join(__dirname, '..', 'uploads')));
@@ -34,6 +36,7 @@ app.use('/api', productosRoutes);
 app.use('/api', cotizacionesRoutes);
 app.use('/api', solicitudesRoutes);
 app.use('/api', authRoutes);
+app.use('/api/admin', adminRoutes);
 // Ruta inexistente (siempre después de todas las rutas)
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada.' });
