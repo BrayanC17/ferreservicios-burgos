@@ -1,0 +1,72 @@
+<section class="contenedor pagina">
+  <h1>Catálogo de productos</h1>
+
+  <form class="buscador" (submit)="$event.preventDefault(); buscar(caja.value); caja.value = ''">
+    <input #caja type="search" autocomplete="off"
+         placeholder="Busca por nombre o código (ej. llave, cable, FSB-00911)" />
+    <button type="submit">Buscar</button>
+  </form>
+
+  <div class="layout">
+    <aside class="filtros">
+      <h2>Categorías</h2>
+      <button type="button" [class.activa]="!categoria()" (click)="elegirCategoria('')">
+        Todas
+      </button>
+      @for (c of categorias(); track c.id) {
+        <button type="button" [class.activa]="categoria() === c.slug" (click)="elegirCategoria(c.slug)">
+          {{ c.nombre }} <small>{{ c.total_productos }}</small>
+        </button>
+      }
+    </aside>
+
+    <div class="resultados">
+      <p class="resumen">
+        @if (!cargando() && !error()) {
+          {{ meta().total }} {{ meta().total === 1 ? 'producto' : 'productos' }}
+          @if (q()) { para "<strong>{{ q() }}</strong>" }
+        }
+      </p>
+
+      @if (error()) {
+        <div class="aviso">No se pudo cargar el catálogo. Revisa que el servidor esté encendido.</div>
+      } @else if (cargando()) {
+        <div class="aviso">Cargando productos…</div>
+      } @else if (productos().length === 0) {
+        <div class="aviso">No encontramos productos con esa búsqueda. Prueba con otra palabra o cambia de categoría.</div>
+      } @else {
+        <div class="grid">
+          @for (p of productos(); track p.id) {
+            <article class="tarjeta">
+              <div class="foto">
+                @if (imagen(p); as src) {
+                  <img [src]="src" [alt]="p.nombre" loading="lazy" />
+                } @else {
+                  <span class="sin-foto">🛠️</span>
+                }
+              </div>
+              <div class="info">
+                <span class="categoria">{{ p.categoria }}</span>
+                <h3>{{ p.nombre }}</h3>
+                <p class="precio">{{ precio(p) }}</p>
+                <button class="boton" type="button" [class.en-cotizacion]="enCotizacion(p) > 0" (click)="agregar(p)">
+                  @if (enCotizacion(p) > 0) { ✓ En cotización ({{ enCotizacion(p) }}) } @else { Agregar a cotización }
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+
+        @if (meta().totalPages > 1) {
+          <nav class="paginacion" aria-label="Paginación">
+            <button type="button" [disabled]="meta().page === 1" (click)="irAPagina(meta().page - 1)">‹</button>
+            @for (n of paginas(); track n) {
+              <button type="button" [class.activa]="n === meta().page" (click)="irAPagina(n)">{{ n }}</button>
+            }
+            <button type="button" [disabled]="meta().page === meta().totalPages" (click)="irAPagina(meta().page + 1)">›</button>
+          </nav>
+        }
+      }
+    </div>
+  </div>
+</section>

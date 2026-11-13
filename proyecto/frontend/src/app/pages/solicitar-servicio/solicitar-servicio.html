@@ -1,0 +1,76 @@
+<section class="contenedor pagina">
+  <h1>Solicitar un servicio</h1>
+  <p class="intro">
+    Cuéntanos qué necesitas y cuándo. Te contactamos al celular para confirmar la visita.
+  </p>
+
+  @if (creada(); as c) {
+    <div class="exito">
+      <h2>¡Solicitud enviada!</h2>
+      <p>Tu código es <strong>{{ c.codigo }}</strong></p>
+      <p>Te llamaremos al celular que dejaste para confirmar la visita.</p>
+      <a routerLink="/" class="btn btn-verde">Volver al inicio</a>
+    </div>
+  } @else {
+    <form class="tarjeta" [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+      <label>
+        Tipo de servicio
+        <select formControlName="tipo_servicio">
+          <option value="" disabled>Selecciona una opción</option>
+          @for (t of tipos; track t) { <option [value]="t">{{ t }}</option> }
+        </select>
+        @if (invalido('tipo_servicio')) { <small class="error">Elige el tipo de servicio.</small> }
+      </label>
+
+      <div class="fila">
+        <label>
+          Fecha de la visita
+          <input type="date" formControlName="fecha_visita" [min]="hoy" />
+          @if (invalido('fecha_visita')) {
+            <small class="error">
+              {{ form.get('fecha_visita')?.hasError('domingo') ? 'Atendemos de lunes a sábado.' : 'Elige la fecha de la visita.' }}
+            </small>
+          }
+        </label>
+      </div>
+
+      <label>
+        Dirección
+        <input type="text" formControlName="direccion" placeholder="Ej. Cra. 93 #22-11, apto 301" autocomplete="street-address" />
+        @if (invalido('direccion')) { <small class="error">Escribe la dirección completa.</small> }
+      </label>
+
+      <label>
+        Barrio (opcional)
+        <input type="text" formControlName="barrio" placeholder="Ej. Fontibón Centro" />
+      </label>
+
+      <label>
+        ¿Qué necesitas?
+        <textarea formControlName="descripcion" rows="4" maxlength="500"
+          placeholder="Ej. Se me dañó un toma de la cocina y quiero cambiar dos bombillos."></textarea>
+        @if (invalido('descripcion')) { <small class="error">Cuéntanos un poco más (mínimo 10 letras).</small> }
+      </label>
+
+      <div class="fila">
+        <label>
+          Nombre completo
+          <input type="text" formControlName="nombre" autocomplete="name" />
+          @if (invalido('nombre')) { <small class="error">Escribe tu nombre (mínimo 3 letras).</small> }
+        </label>
+
+        <label>
+          Celular
+          <input type="tel" formControlName="celular" inputmode="numeric" maxlength="10" placeholder="3001234567" autocomplete="tel" />
+          @if (invalido('celular')) { <small class="error">Ingresa un celular de 10 dígitos que empiece por 3.</small> }
+        </label>
+      </div>
+
+      @if (errorEnvio()) { <p class="error">{{ errorEnvio() }}</p> }
+
+      <button type="submit" class="enviar" [disabled]="enviando()">
+        {{ enviando() ? 'Enviando…' : 'Solicitar servicio' }}
+      </button>
+    </form>
+  }
+</section>

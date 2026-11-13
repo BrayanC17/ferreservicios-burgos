@@ -1,0 +1,152 @@
+<div class="adm-encabezado no-imprimir">
+  <div>
+    <h1>Pagos</h1>
+    <p class="adm-sub">Registro de pagos recibidos con su comprobante.</p>
+  </div>
+  <button type="button" class="adm-btn" (click)="nuevo()">+ Registrar pago</button>
+</div>
+
+<div class="adm-kpis no-imprimir">
+  <div class="adm-kpi"><span>Total recibido (filtro actual)</span><strong>{{ moneda(resumen().suma) }}</strong></div>
+  <div class="adm-kpi"><span>Pagos registrados</span><strong>{{ meta().total }}</strong></div>
+  @for (m of resumen().porMedio; track m.medio_pago) {
+    <div class="adm-kpi"><span>{{ m.medio_pago }} · {{ m.cantidad }}</span><strong>{{ moneda(m.total) }}</strong></div>
+  }
+</div>
+
+<div class="adm-barra no-imprimir">
+  <div class="adm-chips">
+    <button type="button" [class.activa]="!medio()" (click)="filtrarMedio('')">Todos</button>
+    @for (m of medios; track m) {
+      <button type="button" [class.activa]="medio() === m" (click)="filtrarMedio(m)">{{ m }}</button>
+    }
+  </div>
+  <div class="adm-buscador">
+    <input type="month" [value]="mes()" (change)="filtrarMes($any($event.target).value)" aria-label="Mes" />
+    <form (submit)="$event.preventDefault(); buscar(caja.value)">
+      <input #caja type="search" [value]="q()" placeholder="Cliente, concepto o referencia" />
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+</div>
+
+@if (aviso()) { <p class="adm-ok no-imprimir">{{ aviso() }}</p> }
+@if (error()) { <p class="adm-alerta no-imprimir">{{ error() }}</p> }
+
+@if (cargando()) {
+  <div class="adm-vacio no-imprimir">Cargando…</div>
+} @else if (meta().total === 0) {
+  <div class="adm-vacio no-imprimir">Aún no hay pagos con estos filtros.</div>
+} @else {
+  <div class="adm-tabla-caja no-imprimir">
+    <table class="adm-tabla">
+      <thead>
+        <tr>
+          <th>N.º</th><th>Cliente</th><th>Concepto</th><th>Medio</th>
+          <th class="der">Monto</th><th>Fecha</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of pagos(); track p.id) {
+          <tr>
+            <td><strong>{{ p.numero }}</strong>@if (p.soporte_url) { <small>📎 con soporte</small> }</td>
+            <td>{{ p.cliente }}</td>
+            <td>{{ p.concepto }}@if (p.referencia) { <small>Ref. {{ p.referencia }}</small> }</td>
+            <td>{{ p.medio_pago }}</td>
+            <td class="der"><strong>{{ moneda(p.monto) }}</strong></td>
+            <td>{{ fecha(p.fecha_pago) }}</td>
+            <td class="adm-acciones">
+              <button type="button" (click)="verRecibo(p)">Comprobante</button>
+              <button type="button" class="peligro" (click)="eliminar(p)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="adm-paginacion no-imprimir">
+    <button type="button" [disabled]="meta().page === 1" (click)="irAPagina(meta().page - 1)">‹ Anterior</button>
+    <span>Página {{ meta().page }} de {{ meta().totalPages }} · {{ meta().total }} pagos</span>
+    <button type="button" [disabled]="meta().page === meta().totalPages" (click)="irAPagina(meta().page + 1)">Siguiente ›</button>
+  </nav>
+}
+
+@if (modal()) {
+  <div class="adm-fondo no-imprimir" (click)="cerrar()">
+    <form class="adm-modal" [formGroup]="form" (ngSubmit)="guardar()" (click)="$event.stopPropagation()" novalidate>
+      <h2>Registrar pago</h2>
+      <div class="adm-grid">
+        <label class="ancho">Cotización (opcional)
+          <select (change)="elegirCotizacion($any($event.target).value)">
+            <option value="0">— Pago sin cotización —</option>
+            @for (c of cotizaciones(); track c.id) {
+              <option [value]="c.id">{{ c.codigo }} · {{ c.nombre }} · {{ moneda(c.total) }}@if (c.pagado > 0) { (pagado {{ moneda(c.pagado) }}) }</option>
+            }
+          </select>
+        </label>
+        <label>Cliente
+          <input formControlName="cliente" [class.mal]="invalido('cliente')" />
+        </label>
+        <label>Fecha del pago
+          <input type="date" formControlName="fecha_pago" [max]="hoy" [class.mal]="invalido('fecha_pago')" />
+        </label>
+        <label class="ancho">Concepto
+          <input formControlName="concepto" [class.mal]="invalido('concepto')" />
+        </label>
+        <label>Monto (COP)
+          <input type="number" min="1" step="50" formControlName="monto" [class.mal]="invalido('monto')" />
+        </label>
+        <label>Medio de pago
+          <select formControlName="medio_pago">
+            @for (m of medios; track m) { <option [value]="m">{{ m }}</option> }
+          </select>
+        </label>
+        <label class="ancho">Referencia / N.º de transacción (opcional)
+          <input formControlName="referencia" />
+        </label>
+        <label class="ancho archivo">Foto del comprobante (opcional · PNG, JPG o WEBP · máx. 3 MB)
+          <input #foto type="file" accept="image/png,image/jpeg,image/webp" (change)="elegirArchivo(foto)" />
+        </label>
+      </div>
+
+      @if (errorForm()) { <p class="adm-alerta">{{ errorForm() }}</p> }
+
+      <div class="adm-modal-pie">
+        <button type="button" class="adm-btn sec" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar pago' }}</button>
+      </div>
+    </form>
+  </div>
+}
+
+@if (recibo(); as r) {
+  <div class="adm-fondo" (click)="cerrarRecibo()">
+    <div class="adm-modal recibo-caja" (click)="$event.stopPropagation()">
+      <article class="adm-recibo">
+        <header>
+          <strong>Ferreservicios Burgos 22</strong>
+          <span>Cra. 93 #22-11 · Fontibón, Bogotá · WhatsApp 324 619 6174</span>
+        </header>
+        <h2>Comprobante de pago {{ r.numero }}</h2>
+        <dl>
+          <div><dt>Fecha</dt><dd>{{ fecha(r.fecha_pago) }}</dd></div>
+          <div><dt>Cliente</dt><dd>{{ r.cliente }}</dd></div>
+          <div><dt>Concepto</dt><dd>{{ r.concepto }}</dd></div>
+          <div><dt>Medio de pago</dt><dd>{{ r.medio_pago }}</dd></div>
+          @if (r.referencia) { <div><dt>Referencia</dt><dd>{{ r.referencia }}</dd></div> }
+          @if (r.registrado_por) { <div><dt>Recibió</dt><dd>{{ r.registrado_por }}</dd></div> }
+        </dl>
+        <p class="total">Valor recibido <strong>{{ moneda(r.monto) }}</strong></p>
+        @if (soporteUrl(); as s) {
+          <figure><img [src]="s" alt="Soporte del pago" /><figcaption>Soporte adjunto</figcaption></figure>
+        }
+        <footer>Gracias por su compra.</footer>
+      </article>
+      <div class="adm-modal-pie no-imprimir">
+        <button type="button" class="adm-btn sec" (click)="cerrarRecibo()">Cerrar</button>
+        <button type="button" class="adm-btn" (click)="imprimir()">Imprimir / guardar PDF</button>
+      </div>
+    </div>
+  </div>
+}

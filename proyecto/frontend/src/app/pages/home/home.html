@@ -1,0 +1,73 @@
+<section class="hero">
+  <div class="hero__circulo hero__circulo--grande"></div>
+  <div class="hero__circulo hero__circulo--verde"></div>
+
+  <div class="contenedor hero__fila">
+    <div class="hero__texto">
+      <span class="hero__etiqueta">Ferretería en Fontibón · más de 5 años</span>
+
+      <h1 class="hero__titulo">
+        Todo para tu obra y tu hogar, <span class="resalte">sin salir de casa</span>
+      </h1>
+
+      <p class="hero__descripcion">
+        Consulta los productos y precios de la ferretería, arma tu cotización en línea y recógela
+        en el local. También puedes pedir un técnico para tu casa.
+      </p>
+
+      <div class="hero__botones">
+        <a class="btn btn-verde" routerLink="/catalogo">Ver catálogo</a>
+        <a class="btn btn-borde" routerLink="/servicios">Solicitar un servicio</a>
+      </div>
+
+      <div class="hero__stats">
+        @for (stat of estadisticas(); track stat.etiqueta) {
+          <div>
+            <div class="hero__cifra">{{ stat.cifra }}</div>
+            <div class="hero__stat-texto">{{ stat.etiqueta }}</div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <aside class="tarjeta">
+      <h2 class="tarjeta__titulo">¿Qué necesitas hoy?</h2>
+
+      <div class="chips">
+        @for (busqueda of busquedasRapidas; track busqueda) {
+          <a class="chip" routerLink="/catalogo" [queryParams]="{ q: busqueda }">{{ busqueda }}</a>
+        }
+      </div>
+
+      <hr class="tarjeta__linea" />
+
+      <p class="tarjeta__subtitulo">Cotiza en 3 pasos</p>
+      <ol class="pasos">
+        @for (paso of pasos; track paso.numero) {
+          <li class="paso">
+            <span class="paso__numero">{{ paso.numero }}</span>
+            <span><strong>{{ paso.titulo }}</strong> {{ paso.texto }}</span>
+          </li>
+        }
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section class="beneficios">
+  <div class="contenedor beneficios__fila">
+    @for (beneficio of beneficios; track beneficio.titulo) {
+      <div class="beneficio">
+        <div class="beneficio__titulo">{{ beneficio.titulo }}</div>
+        <div class="beneficio__texto">{{ beneficio.texto }}</div>
+      </div>
+    }
+  </div>
+</section>
+
+<div id="categorias"><app-categorias></app-categorias></div>
+<div id="demandados"><app-destacados></app-destacados></div>
+<app-servicios></app-servicios>
+<div id="nosotros"><app-nosotros></app-nosotros></div>
+<div id="contacto"><app-contacto></app-contacto></div>

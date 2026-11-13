@@ -1,0 +1,99 @@
+<div class="topbar">
+  <div class="contenedor topbar__fila">
+    <span>Cra. 93 #22-11, Fontibón · Bogotá D.C.</span>
+    <span>WhatsApp: 324 6196174 · Horario: L-S 7:00 AM - 6:00 PM</span>
+  </div>
+</div>
+
+<!-- Encabezado con logo, buscador y acciones -->
+<header class="cabecera">
+  <div class="contenedor cabecera__fila">
+    <a class="logo" routerLink="/" aria-label="Ferreservicios Burgos, ir al inicio">
+      <span class="logo__marca">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7DDBA3" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2l8.5 5v10L12 22l-8.5-5V7z" />
+          <circle cx="12" cy="12" r="3.2" />
+        </svg>
+      </span>
+      <span class="logo__texto">
+        <span class="logo__nombre">Ferreservicios</span>
+        <span class="logo__sub">BURGOS 22</span>
+      </span>
+    </a>
+
+    <form class="buscador" role="search" (submit)="$event.preventDefault(); buscar(caja, cat)">
+  <select class="buscador__categoria" #cat aria-label="Categoría">
+    <option value="">Todas</option>
+    @for (c of categorias(); track c.id) {
+      <option [value]="c.slug">{{ c.nombre }}</option>
+    }
+  </select>
+  <input
+    class="buscador__campo"
+    #caja
+    type="search"
+    autocomplete="off"
+    aria-label="Buscar productos"
+    placeholder="Busca por producto, marca o referencia"
+    (input)="escribir(caja.value)"
+    (blur)="abierto.set(false)"
+    (focus)="abierto.set(sugerencias().length > 0)"
+    (keydown.escape)="abierto.set(false)"
+  />
+  <button class="buscador__boton" type="submit" aria-label="Buscar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B2A4A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M20 20l-4-4" />
+        </svg>
+        Buscar
+      </button>
+        @if (abierto()) {
+    <ul class="sugerencias" role="listbox">
+      @for (s of sugerencias(); track s.id) {
+        <li role="option" (mousedown)="$event.preventDefault(); elegir(s, caja, cat)">
+          <span class="sugerencias__nombre">{{ s.nombre }}</span>
+          <span class="sugerencias__cat">{{ s.categoria }}</span>
+        </li>
+      }
+    </ul>
+  }
+    </form>
+
+    <div class="acciones">
+      <a class="acciones__servicios" routerLink="/servicios">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0B2A4A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z" />
+        </svg>
+        Servicios
+      </a>
+      <a class="acciones__cotizar" routerLink="/cotizacion">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 4h2l2.5 11h11L21 7H6.5" />
+          <circle cx="9" cy="20" r="1" />
+          <circle cx="17" cy="20" r="1" />
+        </svg>
+        Mi cotización
+        <span class="acciones__contador">{{ carrito.totalUnidades() }}</span>
+      </a>
+    </div>
+
+  </div>
+</header>
+
+<!-- Menú principal -->
+<nav class="menu" aria-label="Principal">
+  <div class="contenedor menu__fila">
+    <a class="menu__categorias" routerLink="/catalogo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B2A4A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" />
+      </svg>
+      Catálogo
+    </a>
+    <a class="menu__enlace" routerLink="/" routerLinkActive="menu__enlace--activo"
+       [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+    <a class="menu__enlace" routerLink="/" fragment="demandados">Más demandados</a>
+    <a class="menu__enlace" routerLink="/servicios" routerLinkActive="menu__enlace--activo">Servicios</a>
+    <a class="menu__enlace" routerLink="/" fragment="nosotros">Nosotros</a>
+    <a class="menu__enlace" routerLink="/" fragment="contacto">Contacto</a>
+  </div>
+</nav>

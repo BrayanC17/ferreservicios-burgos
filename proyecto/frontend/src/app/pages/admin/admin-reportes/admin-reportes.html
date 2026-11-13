@@ -1,0 +1,107 @@
+<div class="adm-encabezado no-imprimir">
+  <div>
+    <h1>Reportes</h1>
+    <p class="adm-sub">Resumen mensual de ventas, pagos, servicios e inventario.</p>
+  </div>
+  <div class="adm-herramientas">
+    <input type="month" [value]="mes()" (change)="cambiarMes($any($event.target).value)" aria-label="Mes del reporte" />
+    <button type="button" class="adm-btn sec" (click)="descargarCsv()" [disabled]="descargando()">Descargar CSV (Excel)</button>
+    <button type="button" class="adm-btn" (click)="imprimir()">Imprimir / PDF</button>
+  </div>
+</div>
+
+@if (error()) { <p class="adm-alerta">{{ error() }}</p> }
+
+@if (cargando()) {
+  <div class="adm-vacio">Generando reporte…</div>
+} @else if (reporte(); as r) {
+  <div class="adm-recibo-titulo">
+    <strong>Ferreservicios Burgos 22</strong> · Reporte de {{ nombreMes() }}
+  </div>
+
+  <div class="adm-kpis">
+    <div class="adm-kpi"><span>Cotizaciones</span><strong>{{ r.kpis.cotizaciones }}</strong></div>
+    <div class="adm-kpi"><span>Ventas entregadas</span><strong>{{ moneda(r.kpis.ventasEntregadas) }}</strong></div>
+    <div class="adm-kpi"><span>Pagos recibidos</span><strong>{{ moneda(r.kpis.pagosRecibidos) }}</strong></div>
+    <div class="adm-kpi"><span>Ticket promedio</span><strong>{{ moneda(r.kpis.ticketPromedio) }}</strong></div>
+    <div class="adm-kpi"><span>Servicios solicitados</span><strong>{{ r.kpis.serviciosSolicitados }}</strong></div>
+    <div class="adm-kpi"><span>Servicios realizados</span><strong>{{ r.kpis.serviciosRealizados }}</strong></div>
+  </div>
+
+  <div class="adm-paneles">
+    <section class="adm-panel ancho">
+      <h2>Pagos por día</h2>
+      @if (r.pagosPorDia.length === 0) {
+        <p class="adm-vacio-peq">Sin pagos este mes.</p>
+      } @else {
+        <div class="adm-barras">
+          @for (d of r.pagosPorDia; track d.dia) {
+            <div class="col" [title]="diaCorto(d.dia) + ': ' + moneda(d.total)">
+              <div class="barra-v" [style.height]="pct(d.total, maxDia())"></div>
+              <span>{{ diaCorto(d.dia) }}</span>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="adm-panel">
+      <h2>Pagos por medio</h2>
+      @for (m of r.pagosPorMedio; track m.medio) {
+        <div class="adm-fila-barra">
+          <span>{{ m.medio }}</span>
+          <div class="pista"><div [style.width]="pct(m.total, maxMedio())"></div></div>
+          <strong>{{ moneda(m.total) }}</strong>
+        </div>
+      } @empty { <p class="adm-vacio-peq">Sin pagos este mes.</p> }
+    </section>
+
+    <section class="adm-panel">
+      <h2>Cotizaciones por estado</h2>
+      <ul class="adm-lista">
+        @for (e of estados(r.cotizacionesPorEstado); track e[0]) {
+          <li><span class="adm-pill" [attr.data-e]="e[0]">{{ e[0] }}</span><strong>{{ e[1] }}</strong></li>
+        } @empty { <li class="adm-vacio-peq">Sin cotizaciones este mes.</li> }
+      </ul>
+    </section>
+
+    <section class="adm-panel">
+      <h2>Servicios a domicilio</h2>
+      <ul class="adm-lista">
+        @for (s of r.serviciosPorTipo; track s.tipo) {
+          <li><span>{{ s.tipo }}</span><strong>{{ s.cantidad }}</strong></li>
+        } @empty { <li class="adm-vacio-peq">Sin solicitudes este mes.</li> }
+      </ul>
+    </section>
+
+    <section class="adm-panel">
+      <h2>Productos más cotizados</h2>
+      @for (p of r.topProductos; track p.nombre) {
+        <div class="adm-fila-barra">
+          <span>{{ p.nombre }}</span>
+          <div class="pista"><div [style.width]="pct(p.unidades, maxProducto())"></div></div>
+          <strong>{{ p.unidades }} u.</strong>
+        </div>
+      } @empty { <p class="adm-vacio-peq">Sin cotizaciones este mes.</p> }
+    </section>
+
+    <section class="adm-panel ancho">
+      <h2>Stock bajo (5 o menos) o agotado <small>(estado actual)</small></h2>
+      @if (r.stockBajo.length === 0) {
+        <p class="adm-vacio-peq">Ningún producto con 5 unidades o menos. 👌</p>
+      } @else {
+        <table class="adm-tabla">
+          <thead><tr><th>SKU</th><th>Producto</th><th class="der">Stock</th></tr></thead>
+          <tbody>
+            @for (p of r.stockBajo; track p.sku) {
+              <tr>
+                <td>{{ p.sku }}</td><td>{{ p.nombre }}</td>
+                <td class="der"><strong>{{ p.stock }}</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  </div>
+}

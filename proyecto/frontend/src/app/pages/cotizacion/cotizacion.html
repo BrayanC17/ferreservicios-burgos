@@ -1,0 +1,101 @@
+<section class="contenedor pagina">
+  <h1>Mi cotización</h1>
+
+  @if (creada(); as c) {
+    <div class="exito">
+      <h2>¡Cotización enviada!</h2>
+      <p>Tu código es <strong>{{ c.codigo }}</strong></p>
+      <p>Te contactaremos al celular para confirmar disponibilidad y el valor final.</p>
+    </div>
+  } @else if (carrito.items().length === 0) {
+    <div class="vacio">
+      <p>Aún no has agregado productos.</p>
+      <a routerLink="/catalogo" class="btn btn-verde">Ver catálogo</a>
+    </div>
+  } @else {
+    <div class="layout">
+      <!-- Lista de productos -->
+      <div class="lista">
+        @for (i of carrito.items(); track i.id) {
+          <article class="item">
+            <div class="foto">
+              @if (imagen(i); as src) {
+                <img [src]="src" [alt]="i.nombre" />
+              } @else {
+                <span>🛠️</span>
+              }
+            </div>
+
+            <div class="datos">
+              <span class="categoria">{{ i.categoria }}</span>
+              <h3>{{ i.nombre }}</h3>
+              <span class="unitario">{{ formato(i.precio) }} c/u</span>
+            </div>
+
+            <div class="cantidad">
+              <button type="button" (click)="cambiar(i, i.cantidad - 1)" aria-label="Menos">−</button>
+              <input type="number" min="1" max="999" [value]="i.cantidad"
+                     (change)="cambiar(i, +$any($event.target).value)" aria-label="Cantidad" />
+              <button type="button" (click)="cambiar(i, i.cantidad + 1)" aria-label="Más">+</button>
+            </div>
+
+            <div class="subtotal">{{ formato(i.precio * i.cantidad) }}</div>
+
+            <button type="button" class="quitar" (click)="carrito.quitar(i.id)" aria-label="Quitar">✕</button>
+          </article>
+        }
+
+        <button type="button" class="vaciar" (click)="carrito.vaciar()">Vaciar cotización</button>
+      </div>
+
+      <!-- Resumen y formulario -->
+      <aside class="resumen">
+        <div class="total">
+          <span>Total estimado</span>
+          <strong>{{ formato(carrito.total()) }}</strong>
+        </div>
+        <p class="nota">Precios de referencia. Te confirmamos disponibilidad y valor final por celular.</p>
+
+        <form [formGroup]="form" (ngSubmit)="enviar()" novalidate>
+          <label>
+            Nombre completo
+            <input type="text" formControlName="nombre" autocomplete="name" />
+            @if (invalido('nombre')) { <small class="error">Escribe tu nombre (mínimo 3 letras).</small> }
+          </label>
+
+          <label>
+            Celular
+            <input type="tel" formControlName="celular" inputmode="numeric" maxlength="10" placeholder="3001234567" autocomplete="tel" />
+            @if (invalido('celular')) { <small class="error">Ingresa un celular válido de 10 dígitos que empiece por 3.</small> }
+          </label>
+
+          <label>
+            Día de recogida
+            <input type="date" formControlName="dia_recogida" [min]="hoy" />
+            @if (invalido('dia_recogida')) { <small class="error">Elige el día en que pasarás por tu pedido.</small> }
+          </label>
+
+          <label>
+            Medio de pago
+            <select formControlName="medio_pago">
+              <option value="" disabled>Selecciona una opción</option>
+              @for (m of mediosPago; track m) { <option [value]="m">{{ m }}</option> }
+            </select>
+            @if (invalido('medio_pago')) { <small class="error">Elige cómo prefieres pagar.</small> }
+          </label>
+
+          <label>
+            Observaciones (opcional)
+            <textarea formControlName="observaciones" rows="3" maxlength="500"></textarea>
+          </label>
+
+          @if (errorEnvio()) { <p class="error">{{ errorEnvio() }}</p> }
+
+          <button type="submit" class="enviar" [disabled]="enviando()">
+            {{ enviando() ? 'Enviando…' : 'Enviar cotización' }}
+          </button>
+        </form>
+      </aside>
+    </div>
+  }
+</section>

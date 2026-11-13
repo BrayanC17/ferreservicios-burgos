@@ -1,0 +1,154 @@
+<h1>Solicitudes</h1>
+<p class="sub">Cotizaciones y servicios que llegan desde el sitio web.</p>
+
+<div class="pestanas" role="tablist">
+  <button type="button" [class.activa]="vista() === 'cotizaciones'" (click)="cambiarVista('cotizaciones')">
+    Cotizaciones
+  </button>
+  <button type="button" [class.activa]="vista() === 'servicios'" (click)="cambiarVista('servicios')">
+    Servicios a domicilio
+  </button>
+</div>
+
+<div class="barra">
+  <div class="chips">
+    <button type="button" [class.activa]="!estado()" (click)="filtrarEstado('')">
+      Todas <span>{{ totalTodos() }}</span>
+    </button>
+    @for (e of estados(); track e) {
+      <button type="button" [class.activa]="estado() === e" (click)="filtrarEstado(e)">
+        {{ e }} <span>{{ conteos()[e] ?? 0 }}</span>
+      </button>
+    }
+  </div>
+
+  <form class="buscador" (submit)="$event.preventDefault(); buscar(caja.value)">
+    <input #caja type="search" [value]="q()" placeholder="Buscar por nombre, celular o código" />
+    <button type="submit">Buscar</button>
+  </form>
+</div>
+
+@if (error()) { <p class="alerta">{{ error() }}</p> }
+
+@if (cargando()) {
+  <div class="aviso">Cargando…</div>
+} @else if (meta().total === 0) {
+  <div class="aviso">No hay solicitudes con estos filtros.</div>
+} @else {
+  <div class="tabla-caja">
+    @if (vista() === 'cotizaciones') {
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th><th>Cliente</th><th>Recogida</th><th>Pago</th>
+            <th class="der">Total</th><th>Estado</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of cotizaciones(); track c.id) {
+            <tr>
+              <td>
+                <strong>{{ c.codigo }}</strong>
+                @if (c.sin_stock) { <span class="agotado" [title]="c.sin_stock">Agotado</span> }
+                <small>{{ fechaHora(c.creada_en) }}</small>
+              </td>
+              <td>{{ c.nombre }}<small>{{ c.celular }}</small></td>
+              <td>{{ fecha(c.dia_recogida) }}</td>
+              <td>{{ c.medio_pago }}</td>
+              <td class="der"><strong>{{ moneda(c.total) }}</strong></td>
+              <td>
+                <select class="estado" [attr.data-estado]="c.estado" (change)="cambiarEstado(c.id, $any($event.target))">
+                  @for (e of estados(); track e) {
+                    <option [value]="e" [selected]="e === c.estado">{{ e }}</option>
+                  }
+                </select>
+              </td>
+              <td class="acciones">
+                <button type="button" (click)="alternar(c.id)">{{ abierto() === c.id ? 'Cerrar' : 'Ver' }}</button>
+                <a [href]="whatsappCotizacion(c)" target="_blank" rel="noopener">WhatsApp</a>
+                <button type="button" class="borrar" (click)="eliminar(c)">Eliminar</button>
+              </td>
+            </tr>
+
+            @if (abierto() === c.id) {
+              <tr class="detalle">
+                <td colspan="7">
+                  @if (c.sin_stock) {
+                    <p class="alerta-stock"><strong>Sin inventario suficiente:</strong> {{ c.sin_stock }}. Pídelo al proveedor y avísale al cliente por WhatsApp.</p>
+                  }
+                  @if (c.observaciones) { <p><strong>Observaciones:</strong> {{ c.observaciones }}</p> }
+                  @if (detalle(); as d) {
+                    <table class="items">
+                      <thead><tr><th>Producto</th><th class="der">Cant.</th><th class="der">Precio</th><th class="der">Subtotal</th></tr></thead>
+                      <tbody>
+                        @for (i of d.items; track i.producto_id) {
+                          <tr>
+                            <td>
+                              {{ i.nombre }}
+                              @if (enEspera(c) && i.stock !== null && i.stock < i.cantidad) {
+                                <span class="agotado">{{ i.stock === 0 ? 'Agotado' : 'Quedan ' + i.stock }}</span>
+                              }
+                            </td>
+                            <td class="der">{{ i.cantidad }}</td>
+                            <td class="der">{{ moneda(i.precio_unitario) }}</td>
+                            <td class="der">{{ moneda(+i.precio_unitario * i.cantidad) }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  } @else {
+                    <p class="aviso-peq">Cargando productos…</p>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th><th>Cliente</th><th>Servicio</th><th>Visita</th>
+            <th>Dirección</th><th>Estado</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of servicios(); track s.id) {
+            <tr>
+              <td><strong>{{ s.codigo }}</strong><small>{{ fechaHora(s.creada_en) }}</small></td>
+              <td>{{ s.nombre }}<small>{{ s.celular }}</small></td>
+              <td>{{ s.tipo_servicio }}</td>
+              <td>{{ fecha(s.fecha_visita) }}</td>
+              <td>{{ s.direccion }}@if (s.barrio) { <small>{{ s.barrio }}</small> }</td>
+              <td>
+                <select class="estado" [attr.data-estado]="s.estado" (change)="cambiarEstado(s.id, $any($event.target))">
+                  @for (e of estados(); track e) {
+                    <option [value]="e" [selected]="e === s.estado">{{ e }}</option>
+                  }
+                </select>
+              </td>
+              <td class="acciones">
+                <button type="button" (click)="alternar(s.id)">{{ abierto() === s.id ? 'Cerrar' : 'Ver' }}</button>
+                <a [href]="whatsapp(s.celular)" target="_blank" rel="noopener">WhatsApp</a>
+                <button type="button" class="borrar" (click)="eliminar(s)">Eliminar</button>
+              </td>
+            </tr>
+
+            @if (abierto() === s.id) {
+              <tr class="detalle">
+                <td colspan="7"><p><strong>¿Qué necesita?</strong> {{ s.descripcion }}</p></td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <nav class="paginacion">
+    <button type="button" [disabled]="meta().page === 1" (click)="irAPagina(meta().page - 1)">‹ Anterior</button>
+    <span>Página {{ meta().page }} de {{ meta().totalPages }} · {{ meta().total }} en total</span>
+    <button type="button" [disabled]="meta().page === meta().totalPages" (click)="irAPagina(meta().page + 1)">Siguiente ›</button>
+  </nav>
+}

@@ -1,0 +1,15 @@
+/* Pie de página siempre al fondo: la página ocupa al menos toda la pantalla
+   y el contenido de cada ruta se estira para empujar el footer hacia abajo. */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+:host > router-outlet + * {
+  flex: 1 0 auto;
+}
+
+:host > app-footer {
+  margin-top: auto;
+}

@@ -1,0 +1,150 @@
+<div class="adm-encabezado">
+  <div>
+    <h1>Inventario</h1>
+    <p class="adm-sub">Productos, existencias e imágenes del catálogo.</p>
+  </div>
+  <button type="button" class="adm-btn" (click)="nuevo()">+ Nuevo producto</button>
+</div>
+
+<div class="adm-kpis">
+  <div class="adm-kpi"><span>Productos</span><strong>{{ resumen().total }}</strong></div>
+  <div class="adm-kpi aviso"><span>Stock bajo</span><strong>{{ resumen().bajo }}</strong></div>
+  <div class="adm-kpi peligro"><span>Agotados</span><strong>{{ resumen().agotado }}</strong></div>
+  <div class="adm-kpi"><span>Valor del inventario</span><strong>{{ moneda(resumen().valor) }}</strong></div>
+</div>
+
+<div class="adm-barra">
+  <div class="adm-chips">
+    @for (f of filtros; track f.id) {
+      <button type="button" [class.activa]="filtro() === f.id" (click)="filtrar(f.id)">{{ f.texto }}</button>
+    }
+  </div>
+  <div class="adm-buscador">
+    <select (change)="porCategoria($any($event.target).value)" aria-label="Categoría">
+      <option value="">Todas las categorías</option>
+      @for (c of categorias(); track c.id) {
+        <option [value]="c.id" [selected]="categoria() === '' + c.id">{{ c.nombre }}</option>
+      }
+    </select>
+    <form (submit)="$event.preventDefault(); buscar(caja.value)">
+      <input #caja type="search" [value]="q()" placeholder="Buscar nombre, SKU o marca" />
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+</div>
+
+@if (aviso()) { <p class="adm-ok">{{ aviso() }}</p> }
+@if (error()) { <p class="adm-alerta">{{ error() }}</p> }
+
+@if (cargando()) {
+  <div class="adm-vacio">Cargando…</div>
+} @else if (meta().total === 0) {
+  <div class="adm-vacio">No hay productos con estos filtros.</div>
+} @else {
+  <div class="adm-tabla-caja">
+    <table class="adm-tabla">
+      <thead>
+        <tr>
+          <th></th><th>Producto</th><th>Categoría</th><th class="der">Precio</th>
+          <th class="centro">Stock</th><th>Estado</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of productos(); track p.id) {
+          <tr [class.oculto]="!p.activo">
+            <td class="miniatura">
+              @if (urlImagen(p); as u) { <img [src]="u" [alt]="p.nombre" loading="lazy" /> }
+              @else { <span class="sin-foto">Sin foto</span> }
+            </td>
+            <td>
+              <strong>{{ p.nombre }}</strong>
+              <small>{{ p.sku }}@if (p.marca) { · {{ p.marca }} }</small>
+            </td>
+            <td>{{ p.categoria }}</td>
+            <td class="der"><strong>{{ moneda(p.precio) }}</strong><small>por {{ p.unidad }}</small></td>
+            <td class="centro">
+              <div class="adm-stock">
+                <button type="button" (click)="ajustar(p, -1)" [disabled]="p.stock === 0" aria-label="Restar 1">−</button>
+                <button type="button" class="num" (click)="pedirAjuste(p)" title="Ajustar cantidad">{{ p.stock }}</button>
+                <button type="button" (click)="ajustar(p, 1)" aria-label="Sumar 1">+</button>
+              </div>
+              <small>{{ p.stock === 0 ? 'agotado' : p.stock <= 5 ? 'quedan pocas' : 'disponible' }}</small>
+            </td>
+            <td><span class="adm-pill" [attr.data-e]="estadoStock(p)">{{ estadoStock(p) }}</span></td>
+            <td class="adm-acciones">
+              <button type="button" (click)="editar(p)">Editar</button>
+              <button type="button" (click)="alternarDestacado(p)">{{ p.destacado ? '★ Destacado' : '☆ Destacar' }}</button>
+              <button type="button" (click)="alternarActivo(p)">{{ p.activo ? 'Ocultar' : 'Mostrar' }}</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="adm-paginacion">
+    <button type="button" [disabled]="meta().page === 1" (click)="irAPagina(meta().page - 1)">‹ Anterior</button>
+    <span>Página {{ meta().page }} de {{ meta().totalPages }} · {{ meta().total }} productos</span>
+    <button type="button" [disabled]="meta().page === meta().totalPages" (click)="irAPagina(meta().page + 1)">Siguiente ›</button>
+  </nav>
+}
+
+@if (modal()) {
+  <div class="adm-fondo" (click)="cerrar()">
+    <form class="adm-modal" [formGroup]="form" (ngSubmit)="guardar()" (click)="$event.stopPropagation()" novalidate>
+      <h2>{{ editando() ? 'Editar producto' : 'Nuevo producto' }}</h2>
+
+      <div class="adm-grid">
+        <label class="ancho">Nombre
+          <input formControlName="nombre" [class.mal]="invalido('nombre')" />
+        </label>
+        <label>SKU
+          <input formControlName="sku" [class.mal]="invalido('sku')" />
+        </label>
+        <label>Categoría
+          <select formControlName="categoria_id" [class.mal]="invalido('categoria_id')">
+            @for (c of categorias(); track c.id) { <option [ngValue]="c.id">{{ c.nombre }}</option> }
+          </select>
+        </label>
+        <label>Marca
+          <input formControlName="marca" />
+        </label>
+        <label>Unidad
+          <input formControlName="unidad" [class.mal]="invalido('unidad')" placeholder="unidad, metro, kg…" />
+        </label>
+        <label>Precio (COP)
+          <input type="number" min="0" step="50" formControlName="precio" [class.mal]="invalido('precio')" />
+        </label>
+        <label>Stock
+          <input type="number" min="0" step="1" formControlName="stock" [class.mal]="invalido('stock')" />
+        </label>
+        <label class="ancho">Descripción
+          <textarea rows="3" formControlName="descripcion"></textarea>
+        </label>
+        <label class="check"><input type="checkbox" formControlName="destacado" /> Producto destacado (home)</label>
+        <label class="check"><input type="checkbox" formControlName="activo" /> Visible en el catálogo</label>
+
+        <div class="ancho imagen-caja">
+          <div class="vista">
+            @if (vistaPrevia(); as v) { <img [src]="v" alt="Vista previa" /> } @else { <span>Sin imagen</span> }
+          </div>
+          <div>
+            <label class="archivo">Imagen (PNG, JPG o WEBP · máx. 3 MB)
+              <input #foto type="file" accept="image/png,image/jpeg,image/webp" (change)="elegirArchivo(foto)" />
+            </label>
+            @if (editando()?.imagen_url && !archivo()) {
+              <button type="button" class="adm-link" (click)="quitarImagen()">Quitar imagen actual</button>
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (errorForm()) { <p class="adm-alerta">{{ errorForm() }}</p> }
+
+      <div class="adm-modal-pie">
+        <button type="button" class="adm-btn sec" (click)="cerrar()">Cancelar</button>
+        <button type="submit" class="adm-btn" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar' }}</button>
+      </div>
+    </form>
+  </div>
+}

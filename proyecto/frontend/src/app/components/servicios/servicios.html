@@ -1,0 +1,26 @@
+<section class="banda">
+  <div class="contenedor interior">
+    <div class="texto">
+      <h2>Servicios para tu hogar, <span>con gente de confianza</span></h2>
+      <p>
+        Pide un técnico indicando la fecha, la dirección y lo que necesitas.
+        Te contactamos al celular para confirmar la visita.
+      </p>
+      <a class="btn btn-verde" routerLink="/catalogo">Ver catálogo</a>
+      <a class="btn btn-borde" routerLink="/servicios">Solicitar un servicio</a>
+    </div>
+
+    <div class="tarjetas">
+      @for (s of servicios; track s.nombre) {
+        <article class="tarjeta">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#7DDBA3"
+               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path [attr.d]="s.icono" />
+          </svg>
+          <h3>{{ s.nombre }}</h3>
+          <p>{{ s.detalle }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>

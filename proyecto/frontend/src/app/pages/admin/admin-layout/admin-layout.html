@@ -1,0 +1,26 @@
+<div class="panel">
+  <aside class="lateral">
+    <div class="marca">
+      <strong>Ferreservicios</strong>
+      <small>ADMINISTRACIÓN</small>
+    </div>
+
+    <nav>
+      <a routerLink="/admin/resumen" routerLinkActive="activo">Resumen</a>
+      <a routerLink="/admin/solicitudes" routerLinkActive="activo">Solicitudes</a>
+      <a routerLink="/admin/inventario" routerLinkActive="activo">Inventario</a>
+      <a routerLink="/admin/pagos" routerLinkActive="activo">Pagos</a>
+      <a routerLink="/admin/reportes" routerLinkActive="activo">Reportes</a>
+    </nav>
+
+    <div class="pie">
+      <span class="usuario">{{ auth.usuario()?.nombre }}</span>
+      <a routerLink="/" class="enlace">Ver sitio</a>
+      <button type="button" (click)="auth.logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="contenido">
+    <router-outlet></router-outlet>
+  </main>
+</div>
